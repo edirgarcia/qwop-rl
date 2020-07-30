@@ -8,15 +8,18 @@ def main():
     time.sleep(10)
     
     while True:
+        capture_screen(1)
         
-        file_name = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-        
-        capture = pyautogui.screenshot()
-        capture.save(r'images\{}.png'.format(file_name))
-        
-        time.sleep(1)
-        
-        
+def capture_screen(wait_time, step=0):
+    
+    capture = pyautogui.screenshot()
+    #print(type(capture))
+    img_path = r'images/capture_step_{}.png'.format(step)
+    capture.save(img_path)
+    
+    time.sleep(wait_time)
+
+    return capture
 
 
 if __name__ == '__main__':

@@ -16,10 +16,10 @@ class MnistNet(nn.Module):
         self.dropout1 = nn.Dropout2d(0.25)
         self.dropout2 = nn.Dropout2d(0.5)
         self.fc1 = nn.Linear(9216, 128)
-        self.fc2 = nn.Linear(128, 10)
+        self.fc2 = nn.Linear(128, 13)
 
     def forward(self, x):
-        print(x.shape)
+        #print(x.shape)
         x = self.conv1(x)
         x = F.relu(x)
         x = self.conv2(x)
@@ -108,14 +108,27 @@ def main():
                        'shuffle': True},
                      )
 
+    #original data loaders
+    # transform=transforms.Compose([
+    #     transforms.ToTensor(),
+    #     transforms.Normalize((0.1307,), (0.3081,))
+    #     ])
+    # dataset1 = datasets.MNIST('../data', train=True, download=True,
+    #                    transform=transform)
+    # dataset2 = datasets.MNIST('../data', train=False,
+    #                    transform=transform)
+
     transform=transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,))
-        ])
-    dataset1 = datasets.MNIST('../data', train=True, download=True,
-                       transform=transform)
-    dataset2 = datasets.MNIST('../data', train=False,
-                       transform=transform)
+    transforms.RandomResizedCrop(28, scale=(0.95, 1.05), ratio=(0.95, 1.05)),
+    transforms.Resize((28,28)),
+    transforms.Grayscale(num_output_channels=1),
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,))
+    ])
+
+    dataset1 = datasets.ImageFolder("images/chars/train", transform=transform)
+    dataset2 = datasets.ImageFolder("images/chars/test", transform=transform)
+
     train_loader = torch.utils.data.DataLoader(dataset1,**kwargs)
     test_loader = torch.utils.data.DataLoader(dataset2, **kwargs)
 
